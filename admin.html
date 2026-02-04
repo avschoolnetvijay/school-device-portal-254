@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - School Device Portal</title>
+    <!-- Reuse main styles for consistency -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/xlsx-js-style/dist/xlsx-bundle.js"></script> <!-- For styling -->
+</head>
+
+<body>
+
+    <div class="container dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Live monitoring of school device reports.</p>
+            </div>
+            <div class="header-actions">
+                <button id="btn-export" class="btn-secondary" onclick="exportFilteredData()">Export Report</button>
+                <button id="btn-refresh" onclick="loadDashboard()">Refresh Data</button>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">Overview</button>
+            <button class="tab-btn" onclick="switchTab('reports')">Detailed Reports</button>
+        </div>
+
+        <!-- DASHBOARD TAB -->
+        <div id="tab-dashboard" class="tab-content active">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card clickable" onclick="showSubmittedSchools()">
+                    <h3>Schools Submitted</h3>
+                    <div class="stat-value" id="stat-total">-</div>
+                    <small>Click to view</small>
+                </div>
+                <div class="stat-card pending clickable" onclick="showPendingSchools()">
+                    <h3>Pending Schools</h3>
+                    <div class="stat-value" id="stat-pending">-</div>
+                    <small>Click to view</small>
+                </div>
+                <div class="stat-card warning clickable" onclick="switchToIssues()">
+                    <h3>Issues Reported</h3>
+                    <div class="stat-value" id="stat-issues">-</div>
+                    <small>Click to view</small>
+                </div>
+                <div class="stat-card info">
+                    <h3>Schools Reported</h3>
+                    <div class="stat-value" id="stat-schools">-</div>
+                </div>
+                <div class="stat-card success">
+                    <h3>Coverage</h3>
+                    <div class="stat-value" id="stat-coverage">-%</div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Preview -->
+            <section class="card table-card">
+                <div class="table-header">
+                    <h2>Recent Activity (Last 10)</h2>
+                    <button class="btn-sm" onclick="switchTab('reports')">View All</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="styled-table" id="recent-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>School</th>
+                                <th>Device</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-table-body">
+                            <!-- JS Injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- REPORTS TAB -->
+        <div id="tab-reports" class="tab-content hidden">
+            <section class="card table-card">
+                <div class="table-header flex-col-mobile">
+                    <h2>Detailed Data Report</h2>
+
+                    <!-- Filters -->
+                    <div class="filters-bar">
+                        <!-- Custom Multi-Select Dropdown -->
+                        <div class="multi-select-container">
+                            <button id="device-dropdown-btn" class="dropdown-btn" onclick="toggleDeviceDropdown()">
+                                All Devices Selected
+                            </button>
+                            <div id="device-dropdown-content" class="dropdown-content hidden">
+                                <!-- Checkboxes injected by JS -->
+                            </div>
+                        </div>
+
+                        <select id="filter-status" onchange="applyFilters()">
+                            <option value="all">All Statuses</option>
+                            <option value="issue">Issues Only</option>
+                            <option value="working">Working Only</option>
+                        </select>
+                        <input type="text" id="filter-search" placeholder="Search School/Block..."
+                            onkeyup="applyFilters()">
+                    </div>
+                </div>
+
+                <div class="table-summary">
+                    Showing <span id="report-count">0</span> records
+                </div>
+
+                <div class="table-responsive">
+                    <table class="styled-table full-border">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>School Details</th>
+                                <th>Device</th>
+                                <th>Status</th>
+                                <th>Issue Details</th>
+                                <th>Overall Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-table-body">
+                            <!-- JS Injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+    <!-- Loader Overlay -->
+    <div id="full-loader" class="loader-overlay hidden">
+        <div class="spinner"></div>
+        <p>Fetching Dashboard Data...</p>
+    </div>
+
+    <script src="script.js"></script> <!-- Import main script to get API_URL -->
+    <script src="admin-script.js"></script>
+</body>
+
+</html>

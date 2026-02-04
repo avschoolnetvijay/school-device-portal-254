@@ -1,0 +1,24 @@
+
+/**
+ * Fetches the master list of devices from the Questions sheet.
+ * Used for the Admin Dashboard filter to ensure all devices are listed.
+ */
+function getDeviceList() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEET_QUESTIONS);
+  if (!sheet) return { status: "success", data: [] };
+
+  const data = sheet.getDataRange().getValues();
+  const devices = [];
+
+  // Skip header, Col B(1) is Device Name
+  for (let i = 1; i < data.length; i++) {
+    const devName = data[i][1];
+    if (devName) {
+      devices.push(String(devName).trim());
+    }
+  }
+
+  // Return unique list just in case
+  return { status: "success", data: [...new Set(devices)] };
+}

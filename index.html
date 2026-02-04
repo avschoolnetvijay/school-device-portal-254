@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Device Status Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for premium look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="main-header">
+            <h1>School Device Status Portal</h1>
+            <p>Complete the survey to update your lab status.</p>
+        </header>
+
+        <!-- Search Section -->
+        <section id="search-section" class="card">
+            <h2>Find Your School</h2>
+            <div class="form-group">
+                <label for="school-code">UDISE Code or School Code</label>
+                <div class="search-box">
+                    <input type="text" id="school-code" placeholder="Enter code (e.g. 201303...)" autocomplete="off">
+                    <button id="btn-search" onclick="searchSchool()">Search</button>
+                </div>
+                <div id="search-error" class="error-msg"></div>
+            </div>
+        </section>
+
+        <!-- Form Section (Hidden Initially) -->
+        <div id="main-form" class="hidden">
+
+            <!-- School Details Card (Read Only) -->
+            <section id="school-details-section" class="card highlight-card">
+                <h2>School Details</h2>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="label">School Name</span>
+                        <span class="value" id="disp-school-name">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">District</span>
+                        <span class="value" id="disp-district">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Block</span>
+                        <span class="value" id="disp-block">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">UDISE Code</span>
+                        <span class="value" id="disp-udise">-</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- User Information Section -->
+            <section id="user-info-section" class="card">
+                <h2>Your Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="user-name">Your Name <span class="req">*</span></label>
+                        <input type="text" id="user-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile-no">Mobile Number <span class="req">*</span></label>
+                        <input type="tel" id="mobile-no" pattern="[0-9]{10}" placeholder="10 digits only" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date-joining">Date of Joining</label>
+                        <input type="date" id="date-joining">
+                    </div>
+                    <div class="form-group">
+                        <label for="evv-reg">EVV Registration Done?</label>
+                        <select id="evv-reg">
+                            <option value="YES">YES</option>
+                            <option value="NO">NO</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="info-corner">Information Corner Available?</label>
+                        <select id="info-corner">
+                            <option value="YES">YES</option>
+                            <option value="NO">NO</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Device Status Section (Dynamic) -->
+            <section id="device-section" class="card">
+                <h2>Device Status Checklist</h2>
+                <p class="subtitle">Please update the status for each device below.</p>
+                <div id="loading-questions" class="loading-spinner hidden">Loading questions...</div>
+                <div id="questions-container">
+                    <!-- Questions will be injected here by JS -->
+                </div>
+            </section>
+
+            <!-- Overall Remarks Section -->
+            <section id="remarks-section" class="card">
+                <h2>Overall Remarks</h2>
+                <div class="form-group">
+                    <label for="overall-remarks">Any other comments or feedback (Optional)</label>
+                    <textarea id="overall-remarks" rows="3" placeholder="Enter any general remarks here..."></textarea>
+                </div>
+            </section>
+
+            <!-- Submit Action -->
+            <div class="action-area">
+                <button id="btn-submit" onclick="submitForm()">Submit Report</button>
+                <div id="submit-error" class="error-msg"></div>
+            </div>
+
+        </div>
+
+        <!-- Success Message (Hidden) -->
+        <div id="success-view" class="card hidden text-center">
+            <div class="success-icon">✓</div>
+            <h2>Submission Successful!</h2>
+            <p>Thank you for updating the device status.</p>
+            <button onclick="window.location.reload()">Submit Another Respone</button>
+        </div>
+
+    </div>
+
+    <!-- Loader Overlay -->
+    <div id="full-loader" class="loader-overlay hidden">
+        <div class="spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

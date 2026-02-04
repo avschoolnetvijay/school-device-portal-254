@@ -1,0 +1,64 @@
+
+/**
+ * Fetches dashboard data for the Admin Panel.
+ * Returns summary stats and recent responses.
+ */
+function getDashboardData() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  
+  // 1. Get Response Data
+  const sheetRes = ss.getSheetByName(SHEET_RESPONSES);
+  if (!sheetRes) return { status: "success", data: { total: 0, issues: 0, schools: 0, recent: [] } };
+  
+  const dataRes = sheetRes.getDataRange().getValues();
+  // Header: Timestamp(0), UDISE(1), SCOD(2), SNAME(3), ... Device(9), Status(10), Issue(11) ...
+  
+  if (dataRes.length <= 1) return { status: "success", data: { total: 0, issues: 0, schools: 0, recent: [] } };
+  
+  let issueCount = 0;
+  const uniqueSchools = new Set();
+  const recentResponses = [];
+  
+  // Skip header
+  // Limit recent items to last 50 for performance
+  const startRow = Math.max(1, dataRes.length - 50); 
+  
+  for (let i = 1; i < dataRes.length; i++) {
+    const row = dataRes[i];
+    const status = String(row[10]).toLowerCase();
+    
+    // Count Issues
+    if (status.includes("issue") || status.includes("not working")) {
+      issueCount++;
+    }
+    
+    // Track Unique Schools (by UDISE)
+    if (row[1]) uniqueSchools.add(String(row[1]));
+    
+    // Collect recent data (limit 50)
+    if (i >= startRow) {
+      recentResponses.unshift({ // Add to front (newest first)
+        timestamp: row[0],
+        school: row[3],
+        device: row[9],
+        status: row[10],
+        issue: row[11]
+      });
+    }
+  }
+
+  // 2. Get Total Schools Count
+  const sheetSchools = ss.getSheetByName(SHEET_SCHOOLS);
+  const totalSchoolsListed = sheetSchools ? sheetSchools.getLastRow() - 1 : 0;
+
+  return {
+    status: "success",
+    data: {
+      total_responses: dataRes.length - 1, // Rows minus header
+      total_issues: issueCount,
+      schools_reported: uniqueSchools.size,
+      total_schools: totalSchoolsListed,
+      recent_activity: recentResponses
+    }
+  };
+}

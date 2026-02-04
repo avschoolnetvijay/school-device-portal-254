@@ -1,0 +1,34 @@
+
+/**
+ * Fetches ALL responses for export.
+ */
+function getAllResponses() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEET_RESPONSES);
+  if (!sheet) return { status: "success", data: [] };
+  
+  const data = sheet.getDataRange().getValues();
+  // Remove header row
+  if (data.length > 0) data.shift(); 
+  
+  // Return plain array of objects for easier processing
+  const formatted = data.map(row => {
+    return {
+      Timestamp: row[0],
+      UDISE: row[1],
+      School_Code: row[2],
+      School_Name: row[3],
+      User_Name: row[4],
+      Mobile: row[5],
+      Joining_Date: row[6],
+      EVV: row[7],
+      Info_Corner: row[8],
+      Device: row[9],
+      Status: row[10],
+      Issue_Details: row[11],
+      Remarks: row[12]
+    };
+  });
+
+  return { status: "success", data: formatted };
+}
