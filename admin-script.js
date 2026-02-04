@@ -9,8 +9,38 @@ let submittedUDISE = new Set(); // Schools that have submitted
 let currentViewMode = "all"; // "all", "submitted", "pending"
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadDashboard();
+    // Check if already logged in this session
+    if (sessionStorage.getItem("admin_auth") === "true") {
+        document.getElementById("login-screen").style.display = "none";
+        loadDashboard();
+    } else {
+        // Setup login listeners
+        const passInput = document.getElementById("admin-pass");
+        const btn = document.querySelector("#login-screen button");
+
+        if (passInput) {
+            passInput.focus();
+            passInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") checkLogin();
+            });
+        }
+    }
 });
+
+function checkLogin() {
+    const pass = document.getElementById("admin-pass").value;
+    const errorMsg = document.getElementById("login-error");
+
+    // DEFAULT PASSWORD - CHANGE THIS IF NEEDED
+    if (pass === "admin123") {
+        document.getElementById("login-screen").style.display = "none";
+        sessionStorage.setItem("admin_auth", "true");
+        loadDashboard();
+    } else {
+        errorMsg.style.display = "block";
+        document.getElementById("admin-pass").style.borderColor = "#DC2626";
+    }
+}
 
 // ==========================================
 // DATA LOADING
